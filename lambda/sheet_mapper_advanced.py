@@ -13,7 +13,7 @@ def upload(csv, filename, dry_run):
     print(csv)
   else:
     s3 = boto3.resource('s3')
-    response = s3.Object('<Link to your bucket goes here!>', filename).put(
+    response = s3.Object('<Name of your bucket goes here!>', filename).put(
       Body=csv,
       ContentType='text/csv',
       ACL='public-read',
