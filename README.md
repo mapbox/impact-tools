@@ -8,6 +8,7 @@ From storytelling, to mobilization, to disaster relief, location and maps are po
 Mapbox Impact Tools are free templates and guides to get up and running with common, strategic use-cases — advanced technical skills not required. 
 
 #### Need additional support? 
+This repo is not monitored for support requests. If you would like to connect with someone at Mapbox, please choose from the following options:
 - Contact [Mapbox Support](https://support.mapbox.com/hc/en-us)
 - Search [Stack Overflow](https://stackoverflow.com/questions/tagged/mapbox)
 - Contact the [Community team](https://www.mapbox.com/community/) to share your project or suggest a new Impact Tool
