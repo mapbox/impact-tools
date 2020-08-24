@@ -23,10 +23,10 @@ def upload(csv, filename, dry_run):
 def get_sheet() -> str:
   log.info('\nget_sheet')
   response = http.request('GET',
-    '<Link to your shared spreadsheet goes here!>',     retries = False)
+    '<Link to your shared spreadsheet goes here!>')
                      
   if response.status != 200:
-    log.error('ERROR\tResponse code %d received', response.status_code)
+    log.error('ERROR\tResponse code %d received', response.status)
     return ""                    
 
   log.info('\nsuccess! get_sheet')
