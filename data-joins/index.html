@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Data Joins - COVID Data</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+    <script src="https://unpkg.com/papaparse@latest/papaparse.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .mapboxgl-popup {
+            max-width: 400px;
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        }
+
+        .mapboxgl-popup {
+            max-width: 400px;
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script>
+        //YOUR TURN: Replace with your Mapbox Token
+        mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94LWNvbW11bml0eSIsImEiOiJja2c4bW0yZ3EwMzl6MnFxbHR2c2N6ampjIn0.DrLDDff8M8iLSNQX49UM5Q';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/light-v10', //style url 
+            zoom: 4.5,
+            center: [-120.4, 36.0]
+        });
+
+        map.on('load', function () {
+            //YOUR TURN: Replace with a link to your CSV
+            const csvUrl = 'https://raw.githubusercontent.com/mjdanielson/ca-districts-map/main/2018-CA-House-Results.csv';
+            Papa.parse(csvUrl, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function (results) {
+                    map.once('idle', () => {
+                        console.log(results.data);
+                        results.data.forEach(row => {
+                            map.setFeatureState({
+                                //YOUR TURN: Replace with your source tileset and source layer
+                                source: 'ca-districts-2018',
+                                sourceLayer: 'ca-districts-2018',
+                                //YOUR TURN: Replace with unqiue ID row name
+                                id: row.district
+                            },
+                                //YOUR TURN: Add rows you want to style/interact with
+                                {
+                                    party: row.party,
+                                    candidate: row.candidate
+                                });
+                        });
+
+                        //YOUR TURN: Add layers to the map 
+                        map.addLayer({
+                            'id': 'ca-district-fill',
+                            'type': 'fill',
+                            'source': 'ca-districts-2018',
+                            'source-layer': 'ca-districts-2018',
+                            'layout': {},
+                            'paint': {
+                                'fill-color':
+                                    [
+                                        "match",
+                                        ["feature-state", "party"],
+                                        "democrat",
+                                        "#6BA0C7",
+                                        "republican",
+                                        "#CE575E",
+                                        "#ccc"
+
+                                    ],
+                                'fill-opacity': 0.9
+
+                            }
+
+                        });
+
+                        map.addLayer({
+                            'id': 'ca-district-line',
+                            'type': 'line',
+                            'source': 'ca-districts-2018',
+                            'source-layer': 'ca-districts-2018',
+                            'layout': {
+                                'line-join': 'round',
+                                'line-cap': 'round'
+                            },
+                            'paint': {
+                                'line-color': '#D8CAC1',
+                                'line-width': 1
+                            }
+                        });
+
+
+                    })
+                }
+            });
+            //YOUR TURN: Add source layer
+            map.addSource('ca-districts-2018', {
+                type: 'vector',
+                url: 'mapbox://mapbox-community.ca-districts-2018',
+                promoteId: 'GEOID'
+            });
+
+        });
+
+
+        var popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+
+        map.on('mousemove', 'ca-district-fill', function (e) {
+
+            map.getCanvas().style.cursor = 'pointer';
+
+            var district = map.queryRenderedFeatures(e.point, { layers: ['ca-district-fill'] });
+
+            var props = district[0].properties;
+
+            var state = district[0].state;
+
+            var content = '<b>' + 'District Details' + '</b>' + '<br>';
+            content += 'Representative: ' + state.candidate + '<br>';
+            content += 'District: ' + props.CD116FP + '<br>';
+            popup.setLngLat(e.lngLat).setHTML(content).addTo(map);
+
+        });
+
+        map.on('mouseleave', 'county-fill', function () {
+            map.getCanvas().style.cursor = '';
+            popup.remove()
+
+
+        });
+
+
+    </script>
+
+</body>
+
+</html>
