@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "author": "Mapbox",
-  "license": "ISC",
+  "license": "CC0",
   "prettier": {
     "singleQuote": true
   },

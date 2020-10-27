@@ -5,8 +5,7 @@ const config = {
   /**
    * Replace this with your Mapbox Access Token (**Do this first!**)
    */
-  accessToken:
-    '***REMOVED***',
+  accessToken: 'Replace with your Mapbox Access token',
   /**
    * Replace with the url of your map style
    */
