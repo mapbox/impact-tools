@@ -1,1 +1,1 @@
-Mapbox impact-tools code is [CC0](https://creativecommons.org/publicdomain/zero/1.0/)
+Mapbox impact-tools code is published under the [CC0 license](https://creativecommons.org/publicdomain/zero/1.0/)
