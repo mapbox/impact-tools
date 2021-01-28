@@ -5,7 +5,8 @@ const config = {
   /**
    * Replace this with your Mapbox Access Token (**Do this first!**)
    */
-  accessToken: 'Replace with your Mapbox Access token',
+  accessToken:
+    'pk.eyJ1IjoibWFwYm94LWNvbW11bml0eSIsImEiOiJja2tkN21jcjAwMG51MnBxdHAxemdueGpzIn0.e0IzLkytGq4pcGGieP8KNA',
   /**
    * Replace with the url of your map style
    */
