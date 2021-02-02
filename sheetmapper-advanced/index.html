@@ -6,9 +6,9 @@
     <title>Replace with your title</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js"></script>
     <link
-      href="https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css"
+      href="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css"
       rel="stylesheet"
     />
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -92,13 +92,14 @@
         };
       };
 
-      //YOUR TURN: add your Mapbox access token
-      mapboxgl.accessToken = "<Replace with your access token>";
+      //YOUR TURN: add your Mapbox token
+      mapboxgl.accessToken =
+        "pk.eyJ1IjoibWFwYm94LWNvbW11bml0eSIsImEiOiJja2tkN21jcjAwMG51MnBxdHAxemdueGpzIn0.e0IzLkytGq4pcGGieP8KNA"; //Mapbox token
       var map = new mapboxgl.Map({
         container: "map", // container id
-        style: "<Replace with a Mapbox style url>", //YOUR TURN: choose a style: https://docs.mapbox.com/api/maps/#styles
-        center: [-122.411464, 37.7852299], // starting position [lng, lat]
-        zoom: 9, // starting zoom
+        style: "mapbox://styles/mapbox/streets-v11", //stylesheet location
+        center: [-122.411, 37.785], // starting position
+        zoom: 10, // starting zoom
         transformRequest: transformRequest,
       });
 
@@ -106,9 +107,12 @@
         init();
       });
 
-      // Initialize D3 to access your table
+      // YOUR TURN: Add the link to your shared spreadsheet to allow D3 to access your table
       function init() {
-        d3.csv("<Link to your shared spreadsheet goes here!>", addPoints);
+        d3.csv(
+          "https://sheetmapper-advanced-test.s3-us-west-2.amazonaws.com/Sheet1.csv",
+          addPoints
+        );
       }
 
       // create a function called addPoints that iterates through your table (row by row) to create markers and popups
