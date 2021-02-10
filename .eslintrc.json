@@ -1,4 +1,5 @@
 {
   "extends": ["@mapbox/eslint-config-mapbox", "prettier"],
-  "env": { "browser": true }
+  "env": { "browser": true },
+  "globals": { "mapboxgl": "readonly" }
 }
