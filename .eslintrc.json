@@ -1,1 +1,4 @@
-{ "extends": ["@mapbox/eslint-config-mapbox", "prettier"] }
+{
+  "extends": ["@mapbox/eslint-config-mapbox", "prettier"],
+  "env": { "browser": true }
+}

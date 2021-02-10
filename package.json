@@ -21,6 +21,7 @@
     "format-md": "kramer --format",
     "format": "npm run format-js && npm run format-md",
     "lint-js": "eslint . && prettier --check '**/!(package*).{js,json}'",
+    "lint-fix": "eslint . --fix",
     "lint-md": "kramer",
     "lint": "npm run lint-js && npm run lint-md"
   },
