@@ -7,7 +7,6 @@
   "devDependencies": {
     "@mapbox/eslint-config-mapbox": "^3.0.0",
     "@mapbox/kramer": "^1.0.0",
-    "@mapbox/secret-cloudfriend": "^4.0.0",
     "eslint": "^7.18.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-node": "^11.1.0",
