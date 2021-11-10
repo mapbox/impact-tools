@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NICFI Tropical Forest Basemaps</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <link href="https://api.mapbox.com/mapbox-assembly/v1.3.0/assembly.min.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-assembly/v1.3.0/assembly.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+<style>
+    body {
+        overflow: hidden;
+    }
+     
+    body * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+     
+    .map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+    }
+</style>
+<div id="comparison-container">
+    <div id="before" class="map"></div>
+    <div id="after" class="map"></div>
+</div>
+<div class="select-container bg-white px12">
+    <select id="selectLeft" class="select"></select>
+    <div class="select-arrow"></div>
+</div>
+<div class="select-container bg-white px12 absolute right">
+    <select id="selectRight" class="select"></select>
+    <div class="select-arrow"></div>
+</div>
+<script>
+    // YOUR TURN: Add your Mapbox access token
+    mapboxgl.accessToken = "{YOUR_MAPBOX_ACCESS_TOKEN}";
+    const beforeMap = new mapboxgl.Map({
+        container: "before",
+        style: "mapbox://styles/mapbox/satellite-streets-v11",
+    // YOUR TURN: Set the center coordinates and zoom level for the 'before' map on the left
+        center: [2, -2],
+        zoom: 2,
+        hash: true
+    });
+    const afterMap = new mapboxgl.Map({
+        container: "after",
+        style: "mapbox://styles/mapbox/satellite-streets-v11",
+    // YOUR TURN: Set the center coordinates and zoom level for the 'before' map on the right
+        center: [2, -2],
+        zoom: 2,
+        hash: true
+    });
+    const container = '#comparison-container';
+    const map = new mapboxgl.Compare(beforeMap, afterMap, container, {});
+
+    // YOUR TURN: Add your Planet NICFI API key
+    const NICFI_API_KEY = "{YOUR_NICFI_API_KEY}";
+    // YOUR TURN: Add available time periods of NICFI imagery, from newer to older
+    const PERIODS = {
+        "Sep 2021": "2021-09",
+        "Aug 2021": "2021-08",
+        "Jul 2021": "2021-07",
+        "Jun 2021": "2021-06",
+        "May 2021": "2021-05",
+        "Apr 2021": "2021-04",
+        "Mar 2021": "2021-03",
+        "Feb 2021": "2021-02",
+        "Jan 2021": "2021-01",
+        "Dec 2020": "2020-12",
+        "Nov 2020": "2020-11",
+        "Oct 2020": "2020-10",
+        "Sep 2020": "2020-09",
+        "Jun 2020 - Sep 2020": "2020-06_2020-08",
+        "Dec 2019 - Jun 2020": "2019-12_2020-05",
+        "Jun 2019 - Dec 2019": "2019-06_2019-11",
+        "Dec 2018 - Jun 2019": "2018-12_2019-05",
+        "Jun 2018 - Dec 2018": "2018-06_2018-11",
+        "Dec 2017 - Jun 2018": "2017-12_2018-05",
+        "Jun 2017 - Dec 2017": "2017-06_2017-11",
+        "Dec 2016 - Jun 2017": "2016-12_2017-05",
+        "Jun 2016 - Dec 2016": "2016-06_2016-11",
+        "Dec 2015 - Jun 2016": "2015-12_2016-05"
+    };
+    Object.keys(PERIODS).forEach((e, i) => {
+        $("#selectLeft").append(new Option(e, PERIODS[e], i===1, i===1));
+        $("#selectRight").append(new Option(e, PERIODS[e], i===0, i===0));
+
+    });
+    const mosaicLeft = $("#selectLeft option:selected").val();
+    const mosaicRight = $("#selectRight option:selected").val();
+
+    beforeMap.on("load", () => {
+        const layers = beforeMap.getStyle().layers;
+        let firstSymbolId;
+        for (const layer of layers) {
+            if (layer.id !== "background" && layer.id !== "satellite") {
+                firstSymbolId = layer.id;
+                break;
+            }
+        }
+
+        beforeMap.addSource("planet-tiles-left", {
+            "type": "raster",
+            "tiles": [
+                // https://developers.planet.com/docs/basemaps/tile-services/xyz/
+                `https://tiles0.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicLeft}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                `https://tiles1.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicLeft}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                `https://tiles2.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicLeft}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                `https://tiles3.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicLeft}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`
+            ],
+            "tileSize": 256,
+            "attribution": '<a target="_top" rel="noopener" href="https://www.planet.com/nicfi/">Imagery ©2021 Planet Labs Inc</a>. <a target="_top" rel="noopener" href="https://assets.planet.com/docs/Planet_ParticipantLicenseAgreement_NICFI.pdf">All use subject to the Participant License Agreement</a>'
+        });
+        beforeMap.addLayer(
+            {
+                "id": "planet-layer-left",
+                "type": "raster",
+                "source": "planet-tiles-left"
+            },
+            firstSymbolId
+        );
+        $("#selectLeft").change(function() {
+            // $("#select option:selected")
+            beforeMap.removeLayer("planet-layer-left");
+            beforeMap.removeSource("planet-tiles-left");
+            const mosaicLeft = $("#selectLeft option:selected").val();
+            beforeMap.addSource("planet-tiles-left", {
+                "type": "raster",
+                "tiles": [
+                    // https://developers.planet.com/docs/basemaps/tile-services/xyz/
+                    `https://tiles0.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicLeft}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                    `https://tiles1.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicLeft}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                    `https://tiles2.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicLeft}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                    `https://tiles3.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicLeft}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`
+
+                ],
+                "tileSize": 256,
+                "attribution": '<a target="_top" rel="noopener" href="https://www.planet.com/nicfi/">Imagery ©2021 Planet Labs Inc</a>. <a target="_top" rel="noopener" href="https://assets.planet.com/docs/Planet_ParticipantLicenseAgreement_NICFI.pdf">All use subject to the Participant License Agreement</a>'
+            });
+            beforeMap.addLayer(
+                {
+                    "id": "planet-layer-left",
+                    "type": "raster",
+                    "source": "planet-tiles-left"
+                },
+                firstSymbolId
+            );
+        });
+    });
+
+    afterMap.on("load", () => {
+        const layers = afterMap.getStyle().layers;
+        let firstSymbolId;
+        for (const layer of layers) {
+            if (layer.id !== "background" && layer.id !== "satellite") {
+                firstSymbolId = layer.id;
+                break;
+            }
+        }
+
+        afterMap.addSource("planet-tiles-right", {
+            "type": "raster",
+            "tiles": [
+                // https://developers.planet.com/docs/basemaps/tile-services/xyz/
+                `https://tiles0.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicRight}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                `https://tiles1.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicRight}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                `https://tiles2.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicRight}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                `https://tiles3.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicRight}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`
+            ],
+            "tileSize": 256,
+            "attribution": '<a target="_top" rel="noopener" href="https://www.planet.com/nicfi/">Imagery ©2021 Planet Labs Inc</a>. <a target="_top" rel="noopener" href="https://assets.planet.com/docs/Planet_ParticipantLicenseAgreement_NICFI.pdf">All use subject to the Participant License Agreement</a>'
+        });
+        afterMap.addLayer(
+            {
+                "id": "planet-layer-right",
+                "type": "raster",
+                "source": "planet-tiles-right"
+            },
+            firstSymbolId
+        );
+        $("#selectRight").change(function() {
+            afterMap.removeLayer("planet-layer-right");
+            afterMap.removeSource("planet-tiles-right");
+            const mosaicRight = $("#selectRight option:selected").val();
+            afterMap.addSource("planet-tiles-right", {
+                "type": "raster",
+                "tiles": [
+                    // https://developers.planet.com/docs/basemaps/tile-services/xyz/
+                    `https://tiles0.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicRight}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                    `https://tiles1.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicRight}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                    `https://tiles2.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicRight}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                    `https://tiles3.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaicRight}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`
+
+                ],
+                "tileSize": 256,
+                "attribution": '<a target="_top" rel="noopener" href="https://www.planet.com/nicfi/">Imagery ©2021 Planet Labs Inc</a>. <a target="_top" rel="noopener" href="https://assets.planet.com/docs/Planet_ParticipantLicenseAgreement_NICFI.pdf">All use subject to the Participant License Agreement</a>'
+            });
+            afterMap.addLayer(
+                {
+                    "id": "planet-layer-right",
+                    "type": "raster",
+                    "source": "planet-tiles-right"
+                },
+                firstSymbolId
+            );
+        });
+    });
+</script>
+
+</body>
+</html>

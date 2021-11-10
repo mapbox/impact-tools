@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NICFI Tropical Forest Basemaps</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    // YOUR TURN: Add your Mapbox access token
+    mapboxgl.accessToken = "{YOUR_MAPBOX_ACCESS_TOKEN}";
+    const map = new mapboxgl.Map({
+        container: "map",
+        style: "mapbox://styles/mapbox/satellite-streets-v11",
+    // YOUR TURN: Set the center coordinates and zoom level for your map  
+        center: [2, -2],
+        zoom: 2,
+        hash: true
+    });
+
+    // YOUR TURN: Replace with your own NICFI API key
+    const NICFI_API_KEY = "{YOUR_NICFI_API_KEY}";
+    // YOUR TURN: Add available NICFI imagery dates of interest, from newer to older
+    const PERIODS = {
+        "Sep 2021": "2021-09",
+        "Aug 2021": "2021-08",
+        "Jul 2021": "2021-07",
+        "Jun 2021": "2021-06",
+        "May 2021": "2021-05",
+        "Apr 2021": "2021-04",
+        "Mar 2021": "2021-03",
+        "Feb 2021": "2021-02",
+        "Jan 2021": "2021-01",
+        "Dec 2020": "2020-12",
+        "Nov 2020": "2020-11",
+        "Oct 2020": "2020-10",
+        "Sep 2020": "2020-09",
+        "Jun 2020 - Sep 2020": "2020-06_2020-08",
+        "Dec 2019 - Jun 2020": "2019-12_2020-05",
+        "Jun 2019 - Dec 2019": "2019-06_2019-11",
+        "Dec 2018 - Jun 2019": "2018-12_2019-05",
+        "Jun 2018 - Dec 2018": "2018-06_2018-11",
+        "Dec 2017 - Jun 2018": "2017-12_2018-05",
+        "Jun 2017 - Dec 2017": "2017-06_2017-11",
+        "Dec 2016 - Jun 2017": "2016-12_2017-05",
+        "Jun 2016 - Dec 2016": "2016-06_2016-11",
+        "Dec 2015 - Jun 2016": "2015-12_2016-05"
+    };
+    const mosaic = Object.values(PERIODS)[0];
+
+    map.on("load", () => {
+        const layers = map.getStyle().layers;
+        let firstSymbolId;
+        for (const layer of layers) {
+            if (layer.id !== "background" && layer.id !== "satellite") {
+                firstSymbolId = layer.id;
+                break;
+            }
+        }
+
+        map.addSource("planet-tiles", {
+            "type": "raster",
+            "tiles": [
+                // https://developers.planet.com/docs/basemaps/tile-services/xyz/
+                `https://tiles0.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaic}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                `https://tiles1.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaic}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                `https://tiles2.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaic}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`,
+                `https://tiles3.planet.com/basemaps/v1/planet-tiles/planet_medres_visual_${mosaic}_mosaic/gmap/{z}/{x}/{y}.png?api_key=${NICFI_API_KEY}`
+            ],
+            "tileSize": 256,
+            "attribution": '<a target="_top" rel="noopener" href="https://www.planet.com/nicfi/">Imagery ©2021 Planet Labs Inc</a>. <a target="_top" rel="noopener" href="https://assets.planet.com/docs/Planet_ParticipantLicenseAgreement_NICFI.pdf">All use subject to the Participant License Agreement</a>'
+        });
+        map.addLayer(
+            {
+                "id": "planet-layer",
+                "type": "raster",
+                "source": "planet-tiles",
+                "maxzoom": 13
+            },
+            firstSymbolId
+        );
+    });
+</script>
+
+</body>
+</html>
