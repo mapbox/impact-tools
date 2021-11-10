@@ -1,5 +1,5 @@
-/* eslint-disable strict */
-/* global config Assembly turf csv2geojson $ */
+/* global config csv2geojson turf Assembly $ */
+'use strict';
 
 mapboxgl.accessToken = config.accessToken;
 const columnHeaders = config.sideBarInfo;
@@ -208,7 +208,6 @@ function createFilterObject(filterSettings) {
     }
     if (filter.type === 'dropdown') {
       const keyValues = {};
-
       Object.assign(keyValues, {
         header: filter.columnHeader,
         value: filter.listItems,
@@ -229,6 +228,8 @@ function applyFilters() {
     const geojCheckboxFilters = [];
 
     filteredGeojson.features = [];
+    // const filteredFeatures = [];
+    // filteredGeojson.features = [];
 
     filterOption.forEach((filter) => {
       if (filter.type === 'checkbox' && filter.checked) {

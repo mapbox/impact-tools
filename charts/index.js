@@ -1,3 +1,6 @@
+/* global turf c3  */
+
+'use strict';
 /**
  * Customize this impact tool by filling in the following values to match your data
  */
@@ -91,13 +94,13 @@ const config = {
   studioLayerName: 'choropleth-fill',
 };
 
-/********************************************************************************
+/** ******************************************************************************
  * Don't edit below here unless you want to customize things further
  */
 /**
  * Disable this function if you edit index.html directly
  */
-(updateText = () => {
+(() => {
   document.title = config.title;
   document.getElementById('sidebar-title').textContent = config.title;
   document.getElementById('sidebar-description').innerHTML = config.description;
@@ -126,19 +129,11 @@ const chart = c3.generate({
   },
 });
 
+let bbFull;
 let summaryData = [];
-document.getElementById('resetButton').onclick = () => {
-  if (summaryData) {
-    updateChartFromFeatures(summaryData);
-    highlightFeature();
-  }
-  if (bbFull) {
-    map.fitBounds(bbFull);
-  }
-};
 // For tracking usage of our templates
-const transformRequest = (url, resourceType) => {
-  var isMapboxRequest =
+const transformRequest = (url) => {
+  const isMapboxRequest =
     url.slice(8, 22) === 'api.mapbox.com' ||
     url.slice(10, 26) === 'tiles.mapbox.com';
   return {
@@ -154,8 +149,7 @@ const map = new mapboxgl.Map({
   transformRequest,
 });
 
-let bbFull;
-map.once('idle', (idleEvent) => {
+map.once('idle', () => {
   bbFull = map.getBounds();
 
   buildLegend();
@@ -192,7 +186,17 @@ map.once('idle', (idleEvent) => {
   processSourceFeatures(sourceFeatures);
 });
 
-const onMapClick = (e) => {
+document.getElementById('resetButton').onclick = () => {
+  if (summaryData) {
+    updateChartFromFeatures(summaryData);
+    highlightFeature();
+  }
+  if (bbFull) {
+    map.fitBounds(bbFull);
+  }
+};
+
+function onMapClick(e) {
   const clickedFeature = map
     .queryRenderedFeatures(e.point)
     .filter((item) => item.layer['source-layer'] === config.sourceLayer)[0];
@@ -206,9 +210,9 @@ const onMapClick = (e) => {
     highlightFeature(clickedFeature.id);
     updateChartFromClick(clickedFeature);
   }
-};
+}
 
-const processSourceFeatures = (features) => {
+function processSourceFeatures(features) {
   const uniqueFeatures = filterDuplicates(features);
 
   const data = uniqueFeatures.reduce(
@@ -218,7 +222,7 @@ const processSourceFeatures = (features) => {
       });
       return acc;
     },
-    config.fields.map(() => 0)
+    config.fields.map(() => 0),
   );
 
   // Save the queried data for resetting later
@@ -228,10 +232,10 @@ const processSourceFeatures = (features) => {
     summaryData = data;
   }
   updateChartFromFeatures(summaryData);
-};
+}
 
 let activeFeatureId;
-const highlightFeature = (id) => {
+function highlightFeature(id) {
   if (activeFeatureId) {
     map.setFeatureState(
       {
@@ -239,7 +243,7 @@ const highlightFeature = (id) => {
         sourceLayer: config.sourceLayer,
         id: activeFeatureId,
       },
-      { active: false }
+      { active: false },
     );
   }
   if (id) {
@@ -249,32 +253,32 @@ const highlightFeature = (id) => {
         sourceLayer: config.sourceLayer,
         id,
       },
-      { active: true }
+      { active: true },
     );
   }
   activeFeatureId = id;
-};
+}
 // Because tiled features can be split along tile boundaries we must filter out duplicates
 // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#querysourcefeatures
-const filterDuplicates = (features) => {
+function filterDuplicates(features) {
   return Array.from(new Set(features.map((item) => item.id))).map((id) => {
     return features.find((a) => a.id === id);
   });
-};
+}
 
-const updateChartFromFeatures = (features) => {
+function updateChartFromFeatures(features) {
   chart.load({
     columns: [['data'].concat(features)],
     names: { data: `${config.dataSeriesLabel}` },
   });
-};
+}
 
 /**
  * This function takes in the clicked feature and builds a data object for the chart using fields
  * specified in the config object.
  * @param {Object} feature
  */
-const updateChartFromClick = (feature) => {
+function updateChartFromClick(feature) {
   const data = config.fields.reduce((acc, field) => {
     acc.push(feature.properties[field]);
     return acc;
@@ -293,12 +297,12 @@ const updateChartFromClick = (feature) => {
           }`,
     },
   });
-};
+}
 
 /**
  * Builds out a legend from the viz layer
  */
-const buildLegend = () => {
+function buildLegend() {
   const legend = document.getElementById('legend');
   const legendColors = document.getElementById('legend-colors');
   const legendValues = document.getElementById('legend-values');
@@ -317,7 +321,7 @@ const buildLegend = () => {
         const valueEl = `<div class='col align-center'>${stop.toFixed(
           typeof config.autoLegendDecimals !== 'undefined'
             ? config.autoLegendDecimals
-            : 1
+            : 1,
         )}</div>`;
         const colorEl = `<div class='col h12' style='background-color:${
           stops[index + 1]
@@ -335,4 +339,4 @@ const buildLegend = () => {
       legendValues.innerHTML += value;
     });
   }
-};
+}
