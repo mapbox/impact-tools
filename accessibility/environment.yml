@@ -2,9 +2,8 @@ name: geopandas
 channels:
   - conda-forge
   - defaults
-  - conda-forge/label/shapely_dev
 dependencies:
-  - shapely=1.8a1*
+  - shapely=1.8
   - geopandas=0.9.*
   - rasterstats
   - requests
@@ -16,4 +15,3 @@ dependencies:
   - rtree
   - pygeos
   - autopep8
-  - fire

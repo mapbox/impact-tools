@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 from pathlib import Path
-import os
 import requests
 import backoff
 import geojson
@@ -10,28 +9,39 @@ import pandas as pd
 from shapely.geometry import Point
 import argparse
 
-parser = argparse.ArgumentParser(description="This tool creates isochrones from a set of points")
-parser.add_argument("input", help="geojson or csv (csv must have named lat/lon columns)")
-parser.add_argument("--output", default=None, help="Output file prefix, if ommitted input file name will be used")
+parser = argparse.ArgumentParser(
+    description="This tool creates isochrones from a set of points")
+parser.add_argument(
+    "input", help="geojson or csv (csv must have named lat/lon columns)")
+parser.add_argument("--output", default=None,
+                    help="Output file prefix, if ommitted input file name will be used")
 parser.add_argument("--token", required=True, help="Mapbox API token")
-parser.add_argument("--profile", default="driving", help="Mapbox directions profile to use, must be one of 'walking' 'cycling' 'driving'")
-parser.add_argument("--minutes", default=30, help="The time size of the isochrone to generate in minutes, defaults to 30")
-parser.add_argument("--limit", default=None, type=int, help="If provided, the script will only generate this many isochrones despite the input file size, useful for testing")
-parser.add_argument("--generalize", default=0, help="Tolerance for Douglas-Peucker generalization in meters. use 0 if self-intersecting isochrone issue arises (https://github.com/mapbox/navigation-feedback/issues/999)")
-parser.add_argument("--baseurl", default="https://api.mapbox.com/isochrone/v1/mapbox/")
-parser.add_argument("--force", default=False, action="store_true", help="Overwrite any existing file without warning, otherwise script will exit")
+parser.add_argument("--profile", default="driving",
+                    help="Mapbox directions profile to use, must be one of 'walking' 'cycling' 'driving'")
+parser.add_argument("--minutes", default=30,
+                    help="The time size of the isochrone to generate in minutes, defaults to 30")
+parser.add_argument("--limit", default=None, type=int,
+                    help="If provided, the script will only generate this many isochrones despite the input file size, useful for testing")
+parser.add_argument("--generalize", default=0,
+                    help="Tolerance for Douglas-Peucker generalization in meters. use 0 if self-intersecting isochrone issue arises")
+parser.add_argument("--force", default=False, action="store_true",
+                    help="Overwrite any existing file without warning, otherwise script will exit")
 
-def isochrone(x, y, profile, minutes, generalize, token, baseurl):
+base_url = "https://api.mapbox.com/isochrone/v1/mapbox/"
+
+
+def isochrone(x, y, profile, minutes, generalize, token, base_url):
     if not x or not y:
         print("Missing coordinates, skipping")
         return
-    url = f'{baseurl}{profile}/{x},{y}?contours_minutes={minutes}&generalize={generalize}&polygons=true&access_token={token}'
+    url = f'{base_url}{profile}/{x},{y}?contours_minutes={minutes}&generalize={generalize}&polygons=true&access_token={token}'
     response = request_isochrone(url).json()
     if 'features' in response:
         return response['features'][0]
     else:
         print("Issue creating isochrone, skipping", response)
         return
+
 
 @backoff.on_exception(backoff.expo,
                       requests.exceptions.RequestException)
@@ -70,31 +80,33 @@ def create_isochrones(args):
 
         if is_csv:
             df = pd.read_csv(input)
+            # Fix for NAN error when serializing to JSON
+            df = df.fillna('')
+            # TODO Support more default column names, or use args to define column name for each a la ogr2ogr
             if not ('lat' in df.columns and 'lon' in df.columns):
                 print("Missing lat and lon columns")
                 return
             gdf = gpd.GeoDataFrame(df.drop(['lon', 'lat'], axis=1),
-                crs={'init': 'epsg:4326'},
-                geometry=[Point(xy) for xy in zip(df.lon, df.lat)])
+                                   crs={'init': 'epsg:4326'},
+                                   geometry=[Point(xy) for xy in zip(df.lon, df.lat)])
         elif is_json:
             gdf = gpd.read_file(input)
 
         for i, row in gdf.iterrows():
             if args.limit == None or i < args.limit:
-                iso = isochrone(row.geometry.x, row.geometry.y, args.profile, args.minutes, args.generalize, args.token, args.baseurl)
+                iso = isochrone(row.geometry.x, row.geometry.y, args.profile,
+                                args.minutes, args.generalize, args.token, base_url)
                 if iso:
-                    # create a dict out of two arrays
                     iso['properties'] = row.drop('geometry').to_dict()
                     features.append(iso)
                 else:
-                    # TODO create a buffer instead?
                     skipped = skipped + 1
 
         print(f'{len(features)} isochrones completed. {skipped} rows skipped')
         feature_collection = geojson.FeatureCollection(features)
         output_file.write(geojson.dumps(feature_collection, sort_keys=True))
-        # Return geojson FC for use as module? Or better to return path to file since we will want to do this only once?
         return feature_collection
+
 
 if __name__ == "__main__":
     args = parser.parse_args()
