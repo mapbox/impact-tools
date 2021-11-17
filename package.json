@@ -1,0 +1,40 @@
+{
+  "name": "impact-tools",
+  "version": "1.0.0",
+  "description": "Mapbox Impact Tools",
+  "main": "Readme.md",
+  "dependencies": {},
+  "devDependencies": {
+    "@mapbox/eslint-config-mapbox": "^3.0.0",
+    "@mapbox/kramer": "^1.0.0",
+    "eslint": "^7.18.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-node": "^11.1.0",
+    "husky": "^4.3.8",
+    "lint-staged": "^10.5.3",
+    "prettier": "^2.2.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format-js": "prettier --write '**/!(package*).{js,json}'",
+    "format-md": "kramer --format",
+    "format": "npm run format-js && npm run format-md",
+    "lint-js": "eslint . && prettier --check '**/!(package*).{js,json}'",
+    "lint-fix": "eslint . --fix",
+    "lint-md": "kramer",
+    "lint": "npm run lint-js && npm run lint-md"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mapbox/impact-tools.git"
+  },
+  "keywords": [
+    "education"
+  ],
+  "author": "Mapbox Community Team",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/mapbox/impact-tools/issues"
+  },
+  "homepage": "https://github.com/mapbox/impact-tools#readme"
+}

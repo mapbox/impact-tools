@@ -10,9 +10,6 @@
   "keywords": [],
   "author": "Mapbox",
   "license": "CC0",
-  "prettier": {
-    "singleQuote": true
-  },
   "devDependencies": {
     "prettier": "^2.1.2",
     "reload": "^3.1.1"
