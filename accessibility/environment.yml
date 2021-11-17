@@ -9,8 +9,6 @@ dependencies:
   - requests
   - geojson
   - backoff
-  - ipykernel
-  - matplotlib
   - pyproj
   - rtree
   - pygeos
