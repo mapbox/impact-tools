@@ -19,9 +19,7 @@ parser.add_argument("--buffer_distance", type=int, default=1,
                     help="Buffer geometries to incorporate walking time to roads and fix invalid isochrones")
 parser.add_argument("--limit", default=None, type=int,
                     help="If provided, load only some features for testing")
-parser.add_argument("--no_outputs", default=False,
-                    action="store_true", help="Don't save results to a file")
-parser.add_argument("--output", required=not '--no_outputs' in sys.argv,
+parser.add_argument("--output",
                     help="file path to save dissolved polygons")
 parser.add_argument("--points", default=None,
                     help="geojson or csv (csv must have named lat/lon columns)")
@@ -90,7 +88,7 @@ def analyze(args):
 
     isochrones_dissolved = isochrones_gdf.dissolve().to_crs(epsg=4326)
 
-    if not args.no_outputs:
+    if args.output:
         output = args.output
         is_json = "json" in Path(
             output).suffix or "geojson" in Path(output).suffix
@@ -100,6 +98,9 @@ def analyze(args):
             isochrones_dissolved.to_file(output, driver="GeoJSON")
         elif is_gpkg:
             isochrones_dissolved.to_file(output,
+                                         layer='isochrones_dissolved', driver="GPKG")
+        else:
+            isochrones_dissolved.to_file(output+'.gpkg',
                                          layer='isochrones_dissolved', driver="GPKG")
 
     print('Processing zonal stats for high connectivity')

@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "input", help="geojson or csv (csv must have named lat/lon columns)")
 parser.add_argument("--output", default=None,
-                    help="Output file prefix, if ommitted input file name will be used")
+                    help="Output filename, if ommitted input file name will be used")
 parser.add_argument("--token", required=True, help="Mapbox API token")
 parser.add_argument("--profile", default="driving",
                     help="Mapbox directions profile to use, must be one of 'walking' 'cycling' 'driving'")
