@@ -1,0 +1,15 @@
+name: geopandas
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - shapely=1.8
+  - geopandas=0.9.*
+  - rasterstats
+  - requests
+  - geojson
+  - backoff
+  - pyproj
+  - rtree
+  - pygeos
+  - autopep8
