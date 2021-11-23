@@ -4,6 +4,7 @@ import argparse
 import sys
 import geopandas as gpd
 import pandas as pd
+from pygeos.measurement import area
 from shapely.geometry import Point
 from rasterstats import zonal_stats
 from pyproj.aoi import AreaOfInterest
@@ -86,7 +87,11 @@ def analyze(args):
             args.points_buffer_distance)
         isochrones_gdf = pd.concat([isochrones_gdf, points_buffer_gdf])
 
-    isochrones_dissolved = isochrones_gdf.dissolve().to_crs(epsg=4326)
+    isochrones_pre_dissolved = isochrones_gdf.dissolve()
+    # Project to equal area projection for accurate area calculation
+    area = isochrones_pre_dissolved.to_crs(
+        {'proj': 'cea'}).geometry.area / 10**6
+    isochrones_dissolved = isochrones_pre_dissolved.explode().to_crs(epsg=4326)
 
     if args.output:
         output = args.output
@@ -105,7 +110,9 @@ def analyze(args):
 
     print('Processing zonal stats for high connectivity')
     pop_count = zonal_stats(isochrones_dissolved, args.pop_tiff, stats="sum")
-    print(f'Pop count: {pop_count}')
+    pop_sum = sum([item['sum'] for item in pop_count if item['sum']])
+    # f'Medium connectivity population: {sum_med} density: {sum_med / area_med}')
+    print(f'Connected population: {pop_sum} density: {pop_sum/area}')
 
 
 if __name__ == "__main__":
