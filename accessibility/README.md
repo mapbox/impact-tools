@@ -18,14 +18,14 @@ To view detailed usage of each script run `python analyze.py --help` or `python 
 
 The first step is to run <code>[isochrones.py][2]</code>, a helper tool to generate one [isochrone][3] for each input point, and copy its attributes over to the output shape. Configure the script using the following parameters, which map to parameters [offered by the Isochrone API][4]:
 
-- Token: A Mapbox API token (*required*)
 - Input: A geojson or csv files containing points to (*required*)
-- Output: The filename to use for saving the output geometry. Default is inputfile_travelprofile_traveltime.json
-- Travel time: the time in minutes to travel from the point. Default is 30m
-- Travel profile: the mode of transport, driving, walking or cycling. Default is driving
-- Generalize: a tolerance to use for simplifying the output geometries using the Douglas-Peucker algorithm, in meters. Use 0 (the default) to return the full isochrones, and to avoid occasional self-intersecting geometry errors
-- Limit: If provided, the script will only read in the first *n* features of your input data. Useful for testing
-- Force: Overwrite any existing output files with the same name. Otherwise, script will error if a file exists
+- `token`: A Mapbox API token (*required*)
+- `output`: The filename to use for saving the output geometry. Default is inputfile_travelprofile_traveltime.json
+- `minutes`: The travel time in minutes to travel from the point. Default is 30m
+- `profile`: the mode of transport, driving, walking or cycling. Default is driving
+- `generalize`: a tolerance to use for simplifying the output geometries using the Douglas-Peucker algorithm, in meters. Use 0 (the default) to return the full isochrones, and to avoid occasional self-intersecting geometry errors
+- `limit`: If provided, the script will only read in the first *n* features of your input data. Useful for testing
+- `force`: Overwrite any existing output files with the same name. Otherwise, script will error if a file exists
 
 <code>python isochrones.py --help # for detailed usage info
 python isochrones.py --profile=driving --minutes=30 --generalize=0 --token=$MAPBOX_ACCESS_TOKEN sample_data/points.geojson</code>
