@@ -20,7 +20,7 @@ The first step is to run <code>[isochrones.py][2]</code>, a helper tool to gener
 
 - Input: A GeoJSON or CSV files containing points to (*required*)
 - `token`: A Mapbox API token (*required*)
-- `output`: The filename to use for saving the output geometry. Default is inputfile_travelprofile_traveltime.json
+- `output`: The filename to use for saving the output geometry. Default is `{inputfilename}_{travelprofile}_{traveltime}.json`
 - `minutes`: The travel time in minutes to travel from the point. Default is 30m
 - `profile`: the mode of transport, driving, walking or cycling. Default is driving
 - `generalize`: a tolerance to use for simplifying the output geometries using the Douglas-Peucker algorithm, in meters. Use 0 (the default) to return the full isochrones, and to avoid occasional self-intersecting geometry errors
