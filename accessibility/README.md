@@ -27,7 +27,7 @@ The first step is to run <code>[isochrones.py][2]</code>, a helper tool to gener
 - `limit`: If provided, the script will only read in the first *n* features of your input data. Useful for testing
 - `force`: Overwrite any existing output files with the same name. Otherwise, script will error if a file exists
 
-<code>python isochrones.py --help # for detailed usage info
+<code>
 python isochrones.py --profile=driving --minutes=30 --generalize=0 --token=$MAPBOX_ACCESS_TOKEN sample_data/points.geojson</code>
 
 The output is a GeoJSON collection of all the isochrones for all points in the data sets. The next step is to run <code>[analyze.py][5]</code> which takes those isochrones and the original points, and calculates the total population within that area. Configure the script using the following parameters:
