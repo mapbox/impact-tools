@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
-from pyproj.database import query_utm_crs_info
-from pyproj.aoi import AreaOfInterest
-from rasterstats import zonal_stats
-from shapely.geometry import Point
-from pygeos.measurement import area
 import argparse
 import sys
 import geopandas as gpd
 import pandas as pd
+from shapely.geometry import Point
+from rasterstats import zonal_stats
+from pyproj.aoi import AreaOfInterest
+from pyproj.database import query_utm_crs_info
+from pathlib import Path
 
 parser = argparse.ArgumentParser(
     description="Run zonal stats on area defined by set of isochrone polygons")
