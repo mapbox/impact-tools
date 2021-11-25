@@ -108,10 +108,9 @@ def analyze(args):
             isochrones_dissolved.to_file(output+'.gpkg',
                                          layer='isochrones_dissolved', driver="GPKG")
 
-    print('Processing zonal stats for high connectivity')
+    print('Processing zonal stats')
     pop_count = zonal_stats(isochrones_dissolved, args.pop_tiff, stats="sum")
     pop_sum = sum([item['sum'] for item in pop_count if item['sum']])
-    # f'Medium connectivity population: {sum_med} density: {sum_med / area_med}')
     print(
         f'Accessible population: {pop_sum}. Population density: {pop_sum/area}')
 
