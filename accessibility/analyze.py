@@ -86,7 +86,12 @@ def analyze(args):
             args.points_buffer_distance)
         isochrones_gdf = pd.concat([isochrones_gdf, points_buffer_gdf])
 
-    isochrones_dissolved = isochrones_gdf.dissolve().to_crs(epsg=4326)
+    isochrones_pre_dissolved = isochrones_gdf.dissolve()
+    # Project to equal area projection for accurate area calculation
+    area = (isochrones_pre_dissolved.to_crs(
+        {'proj': 'cea'}).geometry.area / 10**6).values[0]
+    print(f'Total feature area: {area}')
+    isochrones_dissolved = isochrones_pre_dissolved.explode().to_crs(epsg=4326)
 
     if args.output:
         output = args.output
@@ -103,9 +108,11 @@ def analyze(args):
             isochrones_dissolved.to_file(output+'.gpkg',
                                          layer='isochrones_dissolved', driver="GPKG")
 
-    print('Processing zonal stats for high connectivity')
+    print('Processing zonal stats')
     pop_count = zonal_stats(isochrones_dissolved, args.pop_tiff, stats="sum")
-    print(f'Pop count: {pop_count}')
+    pop_sum = sum([item['sum'] for item in pop_count if item['sum']])
+    print(
+        f'Accessible population: {pop_sum}. Population density: {pop_sum/area}')
 
 
 if __name__ == "__main__":
