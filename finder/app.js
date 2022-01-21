@@ -288,7 +288,8 @@ function applyFilters() {
             }
           });
         });
-        removeIds.forEach((id) => {
+        let uniqueRemoveIds = [...new Set(removeIds)];
+        uniqueRemoveIds.forEach(function (id) {
           const idx = filteredGeojson.features.findIndex(
             (f) => f.properties.id === id,
           );
