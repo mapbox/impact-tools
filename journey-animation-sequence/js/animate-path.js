@@ -17,6 +17,8 @@ const animatePath = async ({
 
       // when the duration is complete, resolve the promise and stop iterating
       if (animationPhase > 1) {
+        console.log('leaving animatePath')
+
         resolve();
         return;
       }
@@ -41,7 +43,7 @@ const animatePath = async ({
       ]);
 
       // slowly rotate the map at a constant rate
-      const bearing = startBearing - animationPhase * 160.0;
+      const bearing = startBearing - animationPhase * 200.0;
 
       const PITCH = 70;
 
@@ -50,7 +52,8 @@ const animatePath = async ({
         PITCH,
         bearing,
         lngLat,
-        startAltitude
+        startAltitude,
+        true // smooth
       );
 
       // set the pitch and bearing of the camera
