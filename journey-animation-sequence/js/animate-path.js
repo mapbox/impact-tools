@@ -6,6 +6,8 @@ const animatePath = async ({
   path,
   startBearing,
   startAltitude,
+  pitch,
+  prod
 }) => {
   return new Promise(async (resolve) => {
     const pathDistance = turf.lineDistance(path);
@@ -17,7 +19,6 @@ const animatePath = async ({
 
       // when the duration is complete, resolve the promise and stop iterating
       if (animationPhase > 1) {
-        console.log('leaving animatePath')
 
         resolve();
         return;
@@ -44,12 +45,11 @@ const animatePath = async ({
 
       // slowly rotate the map at a constant rate
       const bearing = startBearing - animationPhase * 200.0;
-
-      const PITCH = 70;
+      // const bearing = startBearing
 
       // compute corrected camera ground position, so that he leading edge of the path is in view
       var correctedPosition = computeCameraPositionByBearingAndPitch(
-        PITCH,
+        pitch,
         bearing,
         lngLat,
         startAltitude,
@@ -58,7 +58,7 @@ const animatePath = async ({
 
       // set the pitch and bearing of the camera
       const camera = map.getFreeCameraOptions();
-      camera.setPitchBearing(PITCH, bearing);
+      camera.setPitchBearing(pitch, bearing);
 
       // set the position and altitude of the camera
       camera.position = mapboxgl.MercatorCoordinate.fromLngLat(
