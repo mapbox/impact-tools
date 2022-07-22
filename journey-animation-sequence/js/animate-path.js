@@ -1,4 +1,4 @@
-import { computeCameraPositionByBearingAndPitch } from "./util.js";
+import { computeCameraPosition } from "./util.js";
 
 const animatePath = async ({
   map,
@@ -13,9 +13,9 @@ const animatePath = async ({
     const pathDistance = turf.lineDistance(path);
     let start;
 
-    const frame = async (time) => {
-      if (!start) start = time;
-      const animationPhase = (time - start) / duration;
+    const frame = async (currentTime) => {
+      if (!start) start = currentTime;
+      const animationPhase = (currentTime - startTime) / duration;
 
       // when the duration is complete, resolve the promise and stop iterating
       if (animationPhase > 1) {
@@ -35,20 +35,23 @@ const animatePath = async ({
 
       // Reduce the visible length of the line by using a line-gradient to cutoff the line
       // animationPhase is a value between 0 and 1 that reprents the progress of the animation
-      map.setPaintProperty("line", "line-gradient", [
-        "step",
-        ["line-progress"],
-        "yellow",
-        animationPhase,
-        "rgba(0, 0, 0, 0)",
-      ]);
+      map.setPaintProperty(
+        "line-layer",
+        "line-gradient",
+        [
+          "step",
+          ["line-progress"],
+          "yellow",
+          animationPhase,
+          "rgba(0, 0, 0, 0)",
+       ]
+      );
 
       // slowly rotate the map at a constant rate
       const bearing = startBearing - animationPhase * 200.0;
-      // const bearing = startBearing
 
       // compute corrected camera ground position, so that he leading edge of the path is in view
-      var correctedPosition = computeCameraPositionByBearingAndPitch(
+      var correctedPosition = computeCameraPosition(
         pitch,
         bearing,
         lngLat,

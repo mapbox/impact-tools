@@ -1,16 +1,16 @@
-// given a bearing, pitch, altitude, and a position on the ground to look at,
-// calculate the camera's position as lngLat
-let previousPosition
+// given a bearing, pitch, altitude, and a targetPosition on the ground to look at,
+// calculate the camera's targetPosition as lngLat
+let previousCameraPosition
 
 // amazingly simple, via https://codepen.io/ma77os/pen/OJPVrP
 function lerp(start, end, amt) {
   return (1 - amt) * start + amt * end
 }
 
-const computeCameraPositionByBearingAndPitch = (
+const computeCameraPosition = (
   pitch,
   bearing,
-  position,
+  targetPosition,
   altitude,
   smooth = false
 ) => {
@@ -26,29 +26,25 @@ const computeCameraPositionByBearingAndPitch = (
       Math.cos(-bearingInRadian)) /
     110000 // 110km/degree latitude
 
-  const longitudeCamera = parseFloat(position.lng);
-  const latitudeCamera = parseFloat(position.lat);
+  var correctedLng = targetPosition.lng + lngDiff;
+  var correctedLat = targetPosition.lat - latDiff;
 
-  var correctedLng = longitudeCamera + lngDiff;
-  var correctedLat = latitudeCamera - latDiff;
-
-
-  const nextPosition = {
+  const newCameraPosition = {
     lng: correctedLng,
     lat: correctedLat
   };
 
   if (smooth) {
-    if (previousPosition) {
+    if (previousCameraPosition) {
       const SMOOTH_FACTOR = 0.96
-      nextPosition.lng = lerp(nextPosition.lng, previousPosition.lng, SMOOTH_FACTOR);
-      nextPosition.lat = lerp(nextPosition.lat, previousPosition.lat, SMOOTH_FACTOR);
+      newCameraPosition.lng = lerp(newCameraPosition.lng, previousCameraPosition.lng, SMOOTH_FACTOR);
+      newCameraPosition.lat = lerp(newCameraPosition.lat, previousCameraPosition.lat, SMOOTH_FACTOR);
     }
   }
 
-  previousPosition = nextPosition
+  previousCameraPosition = newCameraPosition
 
-  return nextPosition
+  return newCameraPosition
 };
 
 const createGeoJSONCircle = (center, radiusInKm, points = 64) => {
@@ -79,4 +75,4 @@ const createGeoJSONCircle = (center, radiusInKm, points = 64) => {
   };
 }
 
-export { computeCameraPositionByBearingAndPitch, createGeoJSONCircle };
+export { computeCameraPosition, createGeoJSONCircle };
