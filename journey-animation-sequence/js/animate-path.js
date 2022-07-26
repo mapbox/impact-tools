@@ -11,10 +11,10 @@ const animatePath = async ({
 }) => {
   return new Promise(async (resolve) => {
     const pathDistance = turf.lineDistance(path);
-    let start;
+    let startTime;
 
     const frame = async (currentTime) => {
-      if (!start) start = currentTime;
+      if (!startTime) startTime = currentTime;
       const animationPhase = (currentTime - startTime) / duration;
 
       // when the duration is complete, resolve the promise and stop iterating

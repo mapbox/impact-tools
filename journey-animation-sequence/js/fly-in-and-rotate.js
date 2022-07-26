@@ -1,4 +1,4 @@
-import { computeCameraPositionByBearingAndPitch } from "./util.js";
+import { computeCameraPosition } from "./util.js";
 
 const flyInAndRotate = async ({
   map,
@@ -41,7 +41,7 @@ const flyInAndRotate = async ({
       currentPitch = startPitch + (endPitch - startPitch) * d3.easeCubicOut(animationPhase)
 
       // compute corrected camera ground position, so the start of the path is always in view
-      var correctedPosition = computeCameraPositionByBearingAndPitch(
+      var correctedPosition = computeCameraPosition(
         currentPitch,
         currentBearing,
         targetLngLat,

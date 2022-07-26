@@ -36,7 +36,7 @@ const computeCameraPosition = (
 
   if (smooth) {
     if (previousCameraPosition) {
-      const SMOOTH_FACTOR = 0.96
+      const SMOOTH_FACTOR = 0.95
       newCameraPosition.lng = lerp(newCameraPosition.lng, previousCameraPosition.lng, SMOOTH_FACTOR);
       newCameraPosition.lat = lerp(newCameraPosition.lat, previousCameraPosition.lat, SMOOTH_FACTOR);
     }

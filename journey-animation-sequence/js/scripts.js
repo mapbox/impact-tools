@@ -24,7 +24,7 @@ mapboxgl.accessToken =
 const map = new mapboxgl.Map({
   container: "map",
   projection: "globe",
-  style: "mapbox://styles/chriswhongmapbox/cl5h6jhqy001d14n97d5y6yvf",
+  style: "mapbox://styles/chriswhongmapbox/cl5wwjkj4001214lfkquw73l3",
   zoom: 1.9466794621990684,
   center: { lng: 12.563530000000014, lat: 58.27372323078674 },
   pitch: 70,
@@ -185,9 +185,9 @@ const addPathSourceAndLayer = (trackGeojson) => {
     data: trackGeojson,
   });
   map.addLayer({
+    id: "line-layer",
     type: "line",
     source: "line",
-    id: "line",
     paint: {
       "line-color": "rgba(0,0,0,0)",
       "line-width": 9,
