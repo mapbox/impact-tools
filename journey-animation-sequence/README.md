@@ -25,3 +25,12 @@ This is an adaptation of the orginal code, refactored to be more amenable to tal
 ## How to Use
 
 Load `index.html` using a local [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
+
+### Query Params
+These query parameters were added to make it easier to develop and to quickly export different animations for the Tour de France Social Media Videos.
+
+`gender` (male|female), `stage` (number) query params will determine which geojson file is loaded for animation, and what the downloaded filename will be
+
+`prod` (boolean) will determine whether a download is triggered after the animation is complete, and will toggle between prod and dev durations for animations (prod animation durations are longer)
+
+`square` (boolean) if true, sets the dimensions of the map container to 1080x1080

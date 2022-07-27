@@ -1,4 +1,4 @@
-import { computeCameraPositionByBearingAndPitch } from "./util.js";
+import { computeCameraPosition } from "./util.js";
 
 const flyInAndRotate = async ({
   map,
@@ -8,12 +8,16 @@ const flyInAndRotate = async ({
   endAltitude,
   startBearing,
   endBearing,
+  startPitch,
+  endPitch,
+  prod
 }) => {
   return new Promise(async (resolve) => {
     let start;
 
     var currentAltitude;
     var currentBearing;
+    var currentPitch;
 
     // the animation frame will run as many times as necessary until the duration has been reached
     const frame = async (time) => {
@@ -30,15 +34,15 @@ const flyInAndRotate = async ({
         animationPhase = 1;
       }
 
-      currentAltitude = startAltitude * (1 - animationPhase) + endAltitude;
-
+      currentAltitude = startAltitude + (endAltitude - startAltitude) * d3.easeCubicOut(animationPhase)
       // rotate the camera between startBearing and endBearing
-      currentBearing = startBearing - endBearing * animationPhase;
+      currentBearing = startBearing + (endBearing - startBearing) * d3.easeCubicOut(animationPhase)
 
-      const PITCH = 70;
+      currentPitch = startPitch + (endPitch - startPitch) * d3.easeCubicOut(animationPhase)
+
       // compute corrected camera ground position, so the start of the path is always in view
-      var correctedPosition = computeCameraPositionByBearingAndPitch(
-        PITCH,
+      var correctedPosition = computeCameraPosition(
+        currentPitch,
         currentBearing,
         targetLngLat,
         currentAltitude
@@ -46,7 +50,7 @@ const flyInAndRotate = async ({
 
       // set the pitch and bearing of the camera
       const camera = map.getFreeCameraOptions();
-      camera.setPitchBearing(PITCH, currentBearing);
+      camera.setPitchBearing(currentPitch, currentBearing);
 
       // set the position and altitude of the camera
       camera.position = mapboxgl.MercatorCoordinate.fromLngLat(
