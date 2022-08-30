@@ -34,3 +34,5 @@ These query parameters were added to make it easier to develop and to quickly ex
 `prod` (boolean) will determine whether a download is triggered after the animation is complete, and will toggle between prod and dev durations for animations (prod animation durations are longer)
 
 `square` (boolean) if true, sets the dimensions of the map container to 1080x1080
+
+Example URL with query params: `http://127.0.0.1:5500/?gender=male&stage=1&prod=true&square=true`
