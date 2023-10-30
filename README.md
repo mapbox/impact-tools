@@ -2,17 +2,18 @@ This repository stores the template code files for Mapbox Impact Tools.
 
 # Mapbox Impact Tools
 
-https://www.mapbox.com/impact-tools/
+[https://www.mapbox.com/impact-tools/][1]
 
 From storytelling, to mobilization, to disaster relief, location and maps are powerful tools for impact. But the people and organizations doing the work are facing limited capacity and high stakes. 
 Mapbox Impact Tools are free templates and guides to get up and running with common, strategic use-cases — advanced technical skills not required. 
 
-## Setting up a local testing server 
+## Setting up a local testing server
 
-To avoid CORS errors when testing, we recommend running a local [http-server for node](https://www.npmjs.com/package/http-server) or a [SimpleHTTPServer for python](https://docs.python.org/2/library/simplehttpserver.html).
+To avoid CORS errors when testing, we recommend running a local [http-server for node][2] or a [SimpleHTTPServer for python][3].
 
+### Node:
 
-### Node: 
+http-server -c-1
 
 `$ cd path/to/index.html` <br>
 `$ http-server`<br>
@@ -22,7 +23,7 @@ To avoid CORS errors when testing, we recommend running a local [http-server for
   `http://192.168.0.127:8080`<br>
 `Hit CTRL-C to stop the server`
 
-### Python: 
+### Python:
 
 `$ cd path/to/index.html` <br>
 
@@ -33,14 +34,22 @@ If Python version returned above is 2.X
 
 `$ python -m SimpleHTTPServer`
 
+## Need additional support?
 
-
-## Need additional support? 
 This repo is not monitored for support requests. If you would like to connect with someone at Mapbox, please choose from the following options:
-- Contact [Mapbox Support](https://support.mapbox.com/hc/en-us)
-- Search [Stack Overflow](https://stackoverflow.com/questions/tagged/mapbox)
-- Contact the [Community team](https://www.mapbox.com/community/) to share your project or suggest a new Impact Tool
 
+- Contact [Mapbox Support][4]
+- Search [Stack Overflow][5]
+- Contact the [Community team][6] to share your project or suggest a new Impact Tool
 
+[1]: https://www.mapbox.com/impact-tools/
 
+[2]: https://www.npmjs.com/package/http-server
 
+[3]: https://docs.python.org/2/library/simplehttpserver.html
+
+[4]: https://support.mapbox.com/hc/en-us
+
+[5]: https://stackoverflow.com/questions/tagged/mapbox
+
+[6]: https://www.mapbox.com/community/
