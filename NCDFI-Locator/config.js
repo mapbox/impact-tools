@@ -6,10 +6,10 @@ const config = {
   accessToken:
     'pk.eyJ1IjoiaXNhaWFoY29ybmVsaXVzIiwiYSI6ImNsbzJldHVwdzFmMWEya3FoNGo5ZXoybG8ifQ.P4y494VuvnDyeTQDNtEoDA',
   CSV: './Sample_Data.csv',
-  center: [-120.234, 47.398],
-  zoom: 6,
-  title: 'Test2',
-  description: 'Another Test Here',
+  center: [-118, 51],
+  zoom: 3,
+  title: 'Native CDFI Locator',
+  description: 'Certified Native CDFI of the United States of America.',
   sideBarInfo: ['Location_Name', 'Address', 'Phone'],
   popupInfo: ['Location_Name'],
   filters: [
