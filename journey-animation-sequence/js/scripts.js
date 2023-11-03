@@ -1,30 +1,39 @@
 import loadEncoder from 'https://unpkg.com/mp4-h264@1.0.7/build/mp4-encoder.js';
-import { simd } from "https://unpkg.com/wasm-feature-detect?module";
+//import { simd } from "https://unpkg.com/wasm-feature-detect?module";
+
+// Used this per the UMD version described in https://www.npmjs.com/package/wasm-feature-detect
+// The above method consistently returned 404 
+import "https://unpkg.com/wasm-feature-detect/dist/umd/index.js"
+
 
 import flyInAndRotate from "./fly-in-and-rotate.js";
 import animatePath from "./animate-path.js";
+import keys from "./key.js"
 
 
 import { createGeoJSONCircle } from './util.js'
 
 const urlSearchParams = new URLSearchParams(window.location.search);
-const { gender, stage, square: squareQueryParam, prod: prodQueryParam } = Object.fromEntries(urlSearchParams.entries());
+//const { gender, stage, square: squareQueryParam, prod: prodQueryParam } = Object.fromEntries(urlSearchParams.entries());
+const { gender, stage, square: False, prod: True } = Object.fromEntries(urlSearchParams.entries());
 
-const prod = prodQueryParam === 'true'
-const square = squareQueryParam === 'true'
+/*const prod = prodQueryParam === 'true'
+const square = squareQueryParam === 'true'*/
+
+const prod = true
+const square = false
 
 if (square) {
   document.getElementById("map").style.height = '1080px';
   document.getElementById("map").style.width = '1080px';
 }
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiY2hyaXN3aG9uZ21hcGJveCIsImEiOiJjbDR5OTNyY2cxZGg1M2luejcxZmJpaG1yIn0.mUZ2xk8CLeBFotkPvPJHGg";
+mapboxgl.accessToken = keys.mapboxKey
 
 const map = new mapboxgl.Map({
   container: "map",
   projection: "globe",
-  style: "mapbox://styles/chriswhongmapbox/cl5wwjkj4001214lfkquw73l3",
+  style: "mapbox://styles/danielquiz1/clof94h55002i01rf3d16aes7",
   zoom: 1.9466794621990684,
   center: { lng: 12.563530000000014, lat: 58.27372323078674 },
   pitch: 70,
@@ -38,7 +47,7 @@ map.on("load", async () => {
   add3D();
 
   // don't forget to enable WebAssembly SIMD in chrome://flags for faster encoding
-  const supportsSIMD = await simd();
+  const supportsSIMD = await wasmFeatureDetect.simd();
 
   // initialize H264 video encoder
   const Encoder = await loadEncoder({ simd: supportsSIMD });
@@ -76,7 +85,9 @@ map.on("load", async () => {
 
 
   // fetch the geojson for the linestring to be animated
-  const trackGeojson = await fetch(`./data/${gender}-stage-${stage}.geojson`).then((d) =>
+  //const trackGeojson = await fetch(`./data/${gender}-stage-${stage}.geojson`).then((d) =>
+  //const trackGeojson = await fetch(`./data/male-stage-1.geojson`).then((d) =>
+  const trackGeojson = await fetch(`./data/white-pass-pilot-ridge.geojson`).then((d) =>
     d.json()
   );
   // kick off the animations
@@ -92,6 +103,8 @@ map.on("load", async () => {
     anchor.href = URL.createObjectURL(new Blob([mp4], { type: "video/mp4" }));
     anchor.download = `stage_${stage}_${gender}${square ? '_square' : ''}`;
     anchor.click();
+
+    // make sure to run `ffmpeg -i mapbox-gl.mp4 mapbox-gl-optimized.mp4` to compress the video
   }
 
 });
@@ -116,13 +129,14 @@ const add3D = () => {
   });
 
   // Add terrain source, with slight exaggeration
-  map.addSource("mapbox-dem", {
+  // Changed to dem1 from dem. Something about id already taken
+  map.addSource("mapbox-dem1", {
     type: "raster-dem",
     url: "mapbox://mapbox.terrain-rgb",
     tileSize: 512,
     maxzoom: 14,
   });
-  map.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 });
+  map.setTerrain({ source: "mapbox-dem1", exaggeration: 1.5 });
 };
 
 const playAnimations = async (trackGeojson) => {

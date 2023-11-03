@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Mapbox Impact Tools",
   "main": "Readme.md",
-  "dependencies": {},
+  "dependencies": {
+    "wasm-feature-detect": "^1.6.0"
+  },
   "devDependencies": {
     "@mapbox/eslint-config-mapbox": "^3.0.0",
     "@mapbox/kramer": "^1.0.0",
