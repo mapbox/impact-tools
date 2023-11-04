@@ -23,6 +23,8 @@ const square = squareQueryParam === 'true'*/
 const prod = true
 const square = false
 
+const file_name = "2023_Thru_Permitted"
+
 if (square) {
   document.getElementById("map").style.height = '1080px';
   document.getElementById("map").style.width = '1080px';
@@ -82,12 +84,10 @@ map.on("load", async () => {
 
   map.on('render', frame); // set up frame-by-frame recording
 
-
-
   // fetch the geojson for the linestring to be animated
   //const trackGeojson = await fetch(`./data/${gender}-stage-${stage}.geojson`).then((d) =>
   //const trackGeojson = await fetch(`./data/male-stage-1.geojson`).then((d) =>
-  const trackGeojson = await fetch(`./data/white-pass-pilot-ridge.geojson`).then((d) =>
+  const trackGeojson = await fetch(`./data/${file_name}.geojson`).then((d) =>
     d.json()
   );
   // kick off the animations
@@ -101,7 +101,7 @@ map.on("load", async () => {
     const mp4 = encoder.end();
     const anchor = document.createElement("a");
     anchor.href = URL.createObjectURL(new Blob([mp4], { type: "video/mp4" }));
-    anchor.download = `stage_${stage}_${gender}${square ? '_square' : ''}`;
+    anchor.download = file_name;
     anchor.click();
 
     // make sure to run `ffmpeg -i mapbox-gl.mp4 mapbox-gl-optimized.mp4` to compress the video
@@ -213,7 +213,7 @@ const addPathSourceAndLayer = (trackGeojson) => {
     },
   });
 
-  map.addSource("start-pin-base", {
+  /*map.addSource("start-pin-base", {
     type: "geojson",
     data: createGeoJSONCircle(trackGeojson.geometry.coordinates[0], 0.04)
   });
@@ -272,6 +272,6 @@ const addPathSourceAndLayer = (trackGeojson) => {
       'fill-extrusion-height': 1200
     }
   });
-
+*/
 
 };
