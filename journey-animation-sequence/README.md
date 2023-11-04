@@ -1,3 +1,13 @@
+# Daniel Specific Instructions
+
+From the directory containing index.html (likely the journey-animation-sequence one), run:
+
+`py -m http.server`
+
+in browser, go to 127.0.0.1:8000
+
+Commit with the flag --no-verify to dodge unneeded node steps
+
 # tdf-animation-sequence
 
 Demonstration of a sequence of custom mapboxgl camera and layer animations to display a Tour de France stage
