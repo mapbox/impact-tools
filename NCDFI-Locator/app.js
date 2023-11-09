@@ -21,7 +21,7 @@ const map = new mapboxgl.Map({
 function flyToLocation(currentFeature) {
   map.flyTo({
     center: currentFeature,
-    zoom: 11,
+    zoom: 8,
   });
 }
 
@@ -31,7 +31,15 @@ function createPopup(currentFeature) {
   if (popups[0]) popups[0].remove();
   new mapboxgl.Popup({ closeOnClick: true })
     .setLngLat(currentFeature.geometry.coordinates)
-    .setHTML('<h3>' + currentFeature.properties[config.popupInfo] + '</h3>')
+    .setHTML(
+      '<h3>' +
+        currentFeature.properties[config.popupLocation_Name] +
+        '</h3><br><a href="' +
+        currentFeature.properties[config.popupWebsite] +
+        '" target="_blank">' +
+        currentFeature.properties[config.popupWebsite] +
+        '</a>',
+    )
     .addTo(map);
 }
 
@@ -456,7 +464,7 @@ map.on('load', () => {
           },
           paint: {
             'circle-radius': 5, // size of circles
-            'circle-color': '#3D2E5D', // color of circles
+            'circle-color': '#3D2E5D', // color of circles ['get', 'Color']
             'circle-stroke-color': 'white',
             'circle-stroke-width': 1,
             'circle-opacity': 0.7,
