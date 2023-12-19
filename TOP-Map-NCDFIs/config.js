@@ -9,8 +9,7 @@ const config = {
   center: [-114, 35],
   zoom: 2,
   title: 'Native CDFI Locator',
-  description:
-    '2023 Native Community Development Financial Institutions seeking investments',
+  description: 'Native Community Development Financial Institutions',
   sideBarInfo: ['Org_Name', 'Address', 'City_ST_Zip'],
   popupLocation_Name: ['Org_Name'],
   popupWebsite: ['Website'],

@@ -5,9 +5,9 @@ const config = {
   style: 'mapbox://styles/mapbox/light-v10',
   accessToken:
     'pk.eyJ1IjoiaXNhaWFoY29ybmVsaXVzIiwiYSI6ImNsbzJldHVwdzFmMWEya3FoNGo5ZXoybG8ifQ.P4y494VuvnDyeTQDNtEoDA',
-  CSV: './NCDFIs.csv',
-  center: [-114, 51],
-  zoom: 3,
+  CSV: './2023CertifiedNCDFIs.csv',
+  center: [-114, 35],
+  zoom: 2,
   title: 'Native CDFI Locator',
   description:
     '2023 Certified Native Community Development Financial Institutions of the United States of America.',
