@@ -5,8 +5,8 @@ const config = {
   style: 'mapbox://styles/mapbox/light-v10',
   accessToken:
     'pk.eyJ1IjoiaXNhaWFoY29ybmVsaXVzIiwiYSI6ImNsbzJldHVwdzFmMWEya3FoNGo5ZXoybG8ifQ.P4y494VuvnDyeTQDNtEoDA',
-  CSV: './NCDFIs.csv',
-  center: [-114, 51],
+  CSV: './12.19.2023TopMapNCDFIs.csv',
+  center: [-114, 35],
   zoom: 2,
   title: 'Native CDFI Locator',
   description:
