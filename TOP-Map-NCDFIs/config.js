@@ -32,6 +32,27 @@ const config = {
   filters: [
     {
       type: 'dropdown',
+      title: 'Lending Products',
+      columnHeader: 'Lending_Products_Filter',
+      listItems: [
+        'Agriculture',
+        'Bridge Loans',
+        'Commercial',
+        'Community Facilities',
+        'Consumer',
+        'Credit Build',
+        'Green Products',
+        'Housing',
+        'IDA Grants',
+        'Intermediary/Lend to Other Organizations',
+        'Native Artists',
+        'NMTC',
+        'Nonprofit Operating Capital',
+        'Small Business',
+      ],
+    },
+    {
+      type: 'dropdown',
       title: 'State: ',
       columnHeader: 'State',
       listItems: [

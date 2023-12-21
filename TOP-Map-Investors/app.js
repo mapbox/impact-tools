@@ -184,7 +184,8 @@ function createPopup(currentFeature) {
             'Interest',
           )
         ) {
-          html += '<p> ' + popupInvestmentTermsArray[i].Interest + ' </p>';
+          html +=
+            '<p> Interest: ' + popupInvestmentTermsArray[i].Interest + ' </p>';
         }
         if (
           Object.prototype.hasOwnProperty.call(
@@ -192,7 +193,7 @@ function createPopup(currentFeature) {
             'Term',
           )
         ) {
-          html += '<p> ' + popupInvestmentTermsArray[i].Term + ' </p>';
+          html += '<p> Term: ' + popupInvestmentTermsArray[i].Term + ' </p>';
         }
       }
     }
