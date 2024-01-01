@@ -13,7 +13,6 @@ function setListingsHeight() {
     listings.classList.remove('viewport-twothirds');
   }
   let properListingsDivHeight;
-  // '#sidebarA' div has the 'py12' class which adds 12px of padding to the top and bottom of the rendered body height that 'document.querySelector('#sidebarA').clientHeight' does not catch; add 24
   const sidebarADivHeight = document.querySelector('#sidebarA').clientHeight;
   // Check if the listings breakpoint is active (Listings breakpoint set to shift to bottom when screen width is less that 800px)
   if (windowWidth < 800) {
