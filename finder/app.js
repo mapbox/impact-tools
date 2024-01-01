@@ -1,6 +1,37 @@
 /* global config csv2geojson turf Assembly $ */
 'use strict';
 
+// Create a function to set the '#listings' div height
+function setListingsHeight() {
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+  const listings = document.getElementById('listings');
+  // the 'viewport-twothirds' class does not always allow the '#listings' div to use all of the available vertical space when screen width is >= 800px.
+  // When screen width is < 800px, the listings shift to the bottom of the screen. This class makes the '#listings' div too large and listings are lost below the bottom of the screen when scrolling to the bottom of the div.
+  // Check if the 'viewport-twothirds' class is present; if so, remove it (or remove this if statement after removing this class from the '#listings' div in index.html)
+  if (listings.classList.contains('viewport-twothirds')) {
+    listings.classList.remove('viewport-twothirds');
+  }
+  let properListingsDivHeight;
+  const sidebarADivHeight = document.querySelector('#sidebarA').clientHeight;
+  // Check if the listings breakpoint is active (Listings breakpoint set to shift to bottom when screen width is less that 800px)
+  if (windowWidth < 800) {
+    // '#listings' div's parent's parent (grandparent?) has the 'viewport-third' class which sets the height at 33.3333vh; multiply the windowHeight by .333333 (1/3 of the viewheight) and subtract the sidebarADivHeight to get the properListingsDivHeight
+    properListingsDivHeight = windowHeight * 0.333333 - sidebarADivHeight;
+  } else {
+    // Use the rest of the vertical space
+    properListingsDivHeight = windowHeight - sidebarADivHeight;
+  }
+  // Set the listings div height to the properListingsDivHeight
+  listings.style.height = properListingsDivHeight + 'px';
+}
+
+// Call the getWindowDimensions function on window load
+window.onload = setListingsHeight;
+
+// Evaluate the window dimensions on resize to keep appropriate variable values
+window.onresize = setListingsHeight;
+
 mapboxgl.accessToken = config.accessToken;
 const columnHeaders = config.sideBarInfo;
 
@@ -288,8 +319,8 @@ function applyFilters() {
             }
           });
         });
-        let uniqueRemoveIds = [...new Set(removeIds)];
-        uniqueRemoveIds.forEach(function (id) {
+        const uniqueRemoveIds = [...new Set(removeIds)];
+        uniqueRemoveIds.forEach((id) => {
           const idx = filteredGeojson.features.findIndex(
             (f) => f.properties.id === id,
           );
