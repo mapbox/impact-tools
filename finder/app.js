@@ -1,14 +1,10 @@
 /* global config csv2geojson turf Assembly $ */
 'use strict';
 
-// Determine the window dimensions
-function getWindowDimensions() {
+// Create a function to set the '#listings' div height
+function setListingsHeight() {
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
-  setListingsHeight(windowWidth, windowHeight);
-}
-// Create a function to set the '#listings' div height
-function setListingsHeight(windowWidth, windowHeight) {
   const listings = document.getElementById('listings');
   // the 'viewport-twothirds' class does not always allow the '#listings' div to use all of the available vertical space when screen width is >= 800px.
   // When screen width is < 800px, the listings shift to the bottom of the screen. This class makes the '#listings' div too large and listings are lost below the bottom of the screen when scrolling to the bottom of the div.
@@ -32,10 +28,10 @@ function setListingsHeight(windowWidth, windowHeight) {
 }
 
 // Call the getWindowDimensions function on window load
-window.onload = getWindowDimensions;
+window.onload = setListingsHeight;
 
 // Evaluate the window dimensions on resize to keep appropriate variable values
-window.onresize = getWindowDimensions;
+window.onresize = setListingsHeight;
 
 mapboxgl.accessToken = config.accessToken;
 const columnHeaders = config.sideBarInfo;
@@ -324,8 +320,8 @@ function applyFilters() {
             }
           });
         });
-        let uniqueRemoveIds = [...new Set(removeIds)];
-        uniqueRemoveIds.forEach(function (id) {
+        const uniqueRemoveIds = [...new Set(removeIds)];
+        uniqueRemoveIds.forEach((id) => {
           const idx = filteredGeojson.features.findIndex(
             (f) => f.properties.id === id,
           );
